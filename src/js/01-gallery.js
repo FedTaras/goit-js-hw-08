@@ -1,8 +1,9 @@
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
+
 // Add imports above this line
 import { galleryItems } from './gallery-items';
-// Change code below this line
 
-console.log(galleryItems);
 const divGalleryRef = document.querySelector('.gallery');
 divGalleryRef.insertAdjacentHTML('afterbegin', createGallery());
 
@@ -10,35 +11,23 @@ const imagesMarkup = createGallery(galleryItems);
 function createGallery(images) {
   return galleryItems
     .map(({ preview, original, description }) => {
-      return `<div class="gallery__item">
-       <a class="gallery__link" href="${original}">
-        <img
-          src="${preview}"
-          class="gallery__image"
-          data-source="${original}"
-          alt="${description}"
-        />
-      </a>
-    </div>`;
+      return `
+      <a class="gallery__item" href="${original}">
+       <img class="gallery__image" src="${preview}" alt="${description}" />
+      </a>`;
     })
     .join('');
 }
 
-// console.log(document.querySelectorAll(".gallery__image"));
-divGalleryRef.addEventListener('click', onDivGalleryClick);
+const lightbox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
 
-function onDivGalleryClick(evt) {
-  evt.preventDefault();
-  if (evt.target.nodeName !== 'IMG') {
+window.addEventListener('keydown', onEscPres);
+
+function onEscPres(evt) {
+  if (evt.key !== 'Escape') {
     return;
   }
-  console.log(evt.target.dataset.source);
-
-  basicLightbox
-    .create(
-      `
-    <img width="1400" height="900" src="${evt.target.dataset.source}">
-`
-    )
-    .show();
 }
